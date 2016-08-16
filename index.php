@@ -57,20 +57,22 @@ $fb = new Facebook(array(
 // $helper = new FacebookRedirectLoginHelper( $redirect_uri );
 $helper = $fb->getRedirectLoginHelper();
 
+if(!isset($_SESSION['facebook_access_token'])){
 
-try {
-  $accessToken = $helper->getAccessToken();
-} catch(Facebook\Exceptions\FacebookSDKException $e) {
-  // There was an error communicating with Graph
-  echo "<br/>".$e->getMessage();
-  exit;
+  try {
+    $accessToken = $helper->getAccessToken();
+    $_SESSION['facebook_access_token'] = (string)$accessToken;
+  } catch(Facebook\Exceptions\FacebookSDKException $e) {
+    // There was an error communicating with Graph
+    echo "<br/>".$e->getMessage();
+    exit;
+  }
+}else{
+  $accessToken = $_SESSION['facebook_access_token'];
 }
 
 
-
 if (isset($accessToken)) {
-
-
 
     // Response example.
   $res = $fb->get('/me', $accessToken);
